@@ -1,0 +1,12 @@
+.input, .list {
+    background-color: rgba($color: #fff, $alpha: 0.9);
+    border-radius: 6px;
+}
+
+.list {
+    overflow: auto;
+}
+
+.content {
+    overflow: hidden;
+}
