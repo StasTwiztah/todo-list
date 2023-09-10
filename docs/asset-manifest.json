@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "https://stastwiztah.github.io/todo-list.github.io/static/css/main.680dd426.css",
+    "main.css": "https://stastwiztah.github.io/todo-list.github.io/static/css/main.16a5d8b8.css",
     "main.js": "https://stastwiztah.github.io/todo-list.github.io/static/js/main.29f63951.js",
     "static/js/787.28cb0dcd.chunk.js": "https://stastwiztah.github.io/todo-list.github.io/static/js/787.28cb0dcd.chunk.js",
     "static/media/main.png": "https://stastwiztah.github.io/todo-list.github.io/static/media/main.928b0c794a72f8d7c94c.png",
     "index.html": "https://stastwiztah.github.io/todo-list.github.io/index.html",
-    "main.680dd426.css.map": "https://stastwiztah.github.io/todo-list.github.io/static/css/main.680dd426.css.map",
+    "main.16a5d8b8.css.map": "https://stastwiztah.github.io/todo-list.github.io/static/css/main.16a5d8b8.css.map",
     "main.29f63951.js.map": "https://stastwiztah.github.io/todo-list.github.io/static/js/main.29f63951.js.map",
     "787.28cb0dcd.chunk.js.map": "https://stastwiztah.github.io/todo-list.github.io/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.680dd426.css",
+    "static/css/main.16a5d8b8.css",
     "static/js/main.29f63951.js"
   ]
 }
