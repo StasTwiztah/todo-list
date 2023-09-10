@@ -8,25 +8,47 @@ import { Task } from "../../types/Task";
 import Button from "@semcore/ui/button";
 import { v4 as getUuid } from "uuid";
 import Card from "@semcore/ui/card";
+import {
+  ACTIVE_TASKS_LOCALSTORAGE_NAME,
+  DONE_TASKS_LOCALSTORAGE_NAME,
+} from "../../shared/constants/constants";
 
 export const TodoWidget: FC<FlexProps & HTMLAttributes<HTMLDivElement>> = (
   props
 ) => {
   const [taskInput, setTaskInput] = useState("");
 
-  const [activeTasks, setActiveTasks] = useState<Task[]>(
-    JSON.parse(localStorage.getItem("ACTIVE_TASKS") || "") || []
-  );
-  const [doneTasks, setDoneTasks] = useState<Task[]>(
-    JSON.parse(localStorage.getItem("DONE_TASKS") || "") || []
-  );
+  const [activeTasks, setActiveTasks] = useState<Task[]>(() => {
+    const stored = localStorage.getItem(ACTIVE_TASKS_LOCALSTORAGE_NAME);
+
+    if (stored) {
+      return JSON.parse(stored) || [];
+    }
+
+    return [];
+  });
+  const [doneTasks, setDoneTasks] = useState<Task[]>(() => {
+    const stored = localStorage.getItem(DONE_TASKS_LOCALSTORAGE_NAME);
+
+    if (stored) {
+      return JSON.parse(stored) || [];
+    }
+
+    return [];
+  });
 
   useEffect(() => {
-    localStorage.setItem("ACTIVE_TASKS", JSON.stringify(activeTasks));
+    localStorage.setItem(
+      ACTIVE_TASKS_LOCALSTORAGE_NAME,
+      JSON.stringify(activeTasks)
+    );
   }, [activeTasks]);
 
   useEffect(() => {
-    localStorage.setItem("DONE_TASKS", JSON.stringify(doneTasks));
+    localStorage.setItem(
+      DONE_TASKS_LOCALSTORAGE_NAME,
+      JSON.stringify(doneTasks)
+    );
   }, [doneTasks]);
 
   const addTask = useCallback(() => {
