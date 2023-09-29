@@ -10,16 +10,16 @@ import css from "./index.module.scss";
 
 type TaskProps = {
   task: Task;
-  onDone: () => void;
-  onUndone: () => void;
+  onComplete: () => void;
+  onUncomplete: () => void;
   onDelete: () => void;
 };
 
 export const TaskCard = memo((props: TaskProps) => {
   const {
     task: { description, isActive },
-    onDone,
-    onUndone,
+    onComplete,
+    onUncomplete,
     onDelete,
   } = props;
 
@@ -35,19 +35,19 @@ export const TaskCard = memo((props: TaskProps) => {
       <Text
         size={200}
         tag={isActive ? "p" : "s"}
-        className={isActive ? "" : css.done}
+        className={isActive ? "" : css.completed}
         flex={1}
       >
         {description}
       </Text>
       {isActive ? (
-        <Button onClick={onDone}>
+        <Button onClick={onComplete}>
           <Button.Addon>
             <CheckM />
           </Button.Addon>
         </Button>
       ) : (
-        <Button onClick={onUndone}>
+        <Button onClick={onUncomplete}>
           <Button.Addon>
             <CloseM />
           </Button.Addon>

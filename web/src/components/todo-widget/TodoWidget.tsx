@@ -3,22 +3,22 @@ import css from "./index.module.scss";
 import { Flex, FlexProps } from "@semcore/ui/flex-box";
 import Input from "@semcore/ui/input";
 import MathPlusM from "@semcore/icon/MathPlus/m";
-import { TaskCard } from "../task-card/TaskCard";
-import { Task } from "../../types/Task";
 import Button from "@semcore/ui/button";
 import { v4 as getUuid } from "uuid";
 import Card from "@semcore/ui/card";
 import {
   ACTIVE_TASKS_LOCALSTORAGE_NAME,
-  DONE_TASKS_LOCALSTORAGE_NAME,
+  COMPLETED_TASKS_LOCALSTORAGE_NAME,
 } from "../../shared/constants/constants";
+import { TaskWithIndex } from "../../types/TaskWithIndex";
+import { TodoListWidget } from "../todo-list-widget/TodoListWidget";
 
 export const TodoWidget: FC<FlexProps & HTMLAttributes<HTMLDivElement>> = (
   props
 ) => {
   const [taskInput, setTaskInput] = useState("");
 
-  const [activeTasks, setActiveTasks] = useState<Task[]>(() => {
+  const [activeTasks, setActiveTasks] = useState<TaskWithIndex[]>(() => {
     const stored = localStorage.getItem(ACTIVE_TASKS_LOCALSTORAGE_NAME);
 
     if (stored) {
@@ -27,8 +27,8 @@ export const TodoWidget: FC<FlexProps & HTMLAttributes<HTMLDivElement>> = (
 
     return [];
   });
-  const [doneTasks, setDoneTasks] = useState<Task[]>(() => {
-    const stored = localStorage.getItem(DONE_TASKS_LOCALSTORAGE_NAME);
+  const [completedTasks, setCompletedTasks] = useState<TaskWithIndex[]>(() => {
+    const stored = localStorage.getItem(COMPLETED_TASKS_LOCALSTORAGE_NAME);
 
     if (stored) {
       return JSON.parse(stored) || [];
@@ -46,36 +46,44 @@ export const TodoWidget: FC<FlexProps & HTMLAttributes<HTMLDivElement>> = (
 
   useEffect(() => {
     localStorage.setItem(
-      DONE_TASKS_LOCALSTORAGE_NAME,
-      JSON.stringify(doneTasks)
+      COMPLETED_TASKS_LOCALSTORAGE_NAME,
+      JSON.stringify(completedTasks)
     );
-  }, [doneTasks]);
+  }, [completedTasks]);
 
   const addTask = useCallback(() => {
     if (!!taskInput) {
       setActiveTasks((t) => [
         ...t,
-        { id: getUuid(), description: taskInput, isActive: true },
+        {
+          id: getUuid(),
+          description: taskInput,
+          isActive: true,
+          index: t.length,
+        },
       ]);
       setTaskInput("");
     }
   }, [taskInput]);
 
-  const handleTaskDone = (task: Task) => {
+  const handleTaskComplete = (task: TaskWithIndex) => {
     setActiveTasks((t) => t.filter((x) => x.id !== task.id));
-    setDoneTasks((t) => [...t, { ...task, isActive: false }]);
+    setCompletedTasks((t) => [
+      ...t,
+      { ...task, isActive: false, index: t.length },
+    ]);
   };
 
-  const handleTaskUndone = (task: Task) => {
-    setDoneTasks((t) => t.filter((x) => x.id !== task.id));
-    setActiveTasks((t) => [...t, { ...task, isActive: true }]);
+  const handleTaskUncomplete = (task: TaskWithIndex) => {
+    setCompletedTasks((t) => t.filter((x) => x.id !== task.id));
+    setActiveTasks((t) => [...t, { ...task, isActive: true, index: t.length }]);
   };
 
-  const handleTaskDelete = (task: Task) => {
+  const handleTaskDelete = (task: TaskWithIndex) => {
     if (task.isActive) {
       setActiveTasks((t) => t.filter((x) => x.id !== task.id));
     } else {
-      setDoneTasks((t) => t.filter((x) => x.id !== task.id));
+      setCompletedTasks((t) => t.filter((x) => x.id !== task.id));
     }
   };
 
@@ -106,34 +114,24 @@ export const TodoWidget: FC<FlexProps & HTMLAttributes<HTMLDivElement>> = (
       </Card>
       <Flex direction="column" gap={2} className={css.content}>
         {activeTasks.length > 0 && (
-          <Card flex={1} className={css.list}>
-            <Flex direction="column" gap={1}>
-              {activeTasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onDone={() => handleTaskDone(task)}
-                  onUndone={() => handleTaskUndone(task)}
-                  onDelete={() => handleTaskDelete(task)}
-                />
-              ))}
-            </Flex>
-          </Card>
+          <TodoListWidget
+            tasks={activeTasks}
+            onTasksChange={setActiveTasks}
+            onTaskComplete={handleTaskComplete}
+            onTaskUncomplete={handleTaskUncomplete}
+            onTaskDelete={handleTaskDelete}
+          />
         )}
-        {doneTasks.length > 0 && (
-          <Card hMin="86px" hMax="236px" className={css.list}>
-            <Flex direction="column" gap={1}>
-              {doneTasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onDone={() => handleTaskDone(task)}
-                  onUndone={() => handleTaskUndone(task)}
-                  onDelete={() => handleTaskDelete(task)}
-                />
-              ))}
-            </Flex>
-          </Card>
+        {completedTasks.length > 0 && (
+          <TodoListWidget
+            hMin="86px"
+            hMax="236px"
+            tasks={completedTasks}
+            onTasksChange={setCompletedTasks}
+            onTaskComplete={handleTaskComplete}
+            onTaskUncomplete={handleTaskUncomplete}
+            onTaskDelete={handleTaskDelete}
+          />
         )}
       </Flex>
     </Flex>
